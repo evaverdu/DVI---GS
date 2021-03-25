@@ -21,7 +21,12 @@ Sprite.prototype.hit = function(damage) {
 }
 
 Sprite.prototype.draw = function(ctx) {
+	ctx.save();
+ 	ctx.translate(this.x+this.w/2, this.y+this.h/2);
+ 	ctx.rotate(this.rotation * Math.PI /180);
+	ctx.translate(-(this.x+this.w/2), -(this.y+this.h/2));
 	SpriteSheet.draw(ctx,this.sprite,this.x,this.y,this.frame);
+ 	ctx.restore();
 }
 
 var OBJECT_PLAYER = 1,
