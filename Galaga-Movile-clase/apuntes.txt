@@ -1,0 +1,31 @@
+*********************************************************
+Esto hace que detecte clicks en la pantalla, cuando detecta un click imprime por consola "click"
+
+document.getElementById("game").addEventListener("click", function(){console.log("click")});
+**********************************************************
+ANIMACION DE LA EXPLOSION (realizado en el game.js en la funcion startGame())
+var num = 1;
+SpriteSheet.load({
+		pum: {sx:0, sy:64, w:64, h:64, frames:12}
+		}, function(){
+			setInterval( function(){
+				Game.ctx.clearRect(200,200,64,64);
+				SpriteSheet.draw(Game.ctx, "pum", 200,200, num);
+				if(num < 12){
+					num++;
+				}
+				else{
+					num = 1;
+				}
+			}
+
+			,50);
+		}
+	);
+
+*************************************************************
+Para dibujar figuras: https://developer.mozilla.org/es/docs/Web/API/CanvasRenderingContext2D
+************************************************************
+SpriteSheet.draw(Game.ctx, "ship", 0,0);
+	SpriteSheet.draw(Game.ctx, "pinky", 100,100);
+Pintar navecitas (estaba en la funcion startGam de game.js)
