@@ -57,8 +57,8 @@ var Game = new function() {
 				boards[i].draw(Game.ctx);
 			}
 		}
-		
-		setTimeout(Game.loop,dt);
+
+		requestAnimationFrame(Game.loop);
 
 	};
 
@@ -248,4 +248,99 @@ Level.prototype.step = function(dt) {
 	if(this.levelData.length == 0 && this.board.cnt[OBJECT_ENEMY] == 0) {
 		if(this.callback) this.callback();
 	}
+}
+
+///////////////////////////////////////
+//Analiticas
+///////////////////////////////////////
+var analytics = new function(){
+	var lastDate = Date.now();
+	var time = 0;
+	var frames = 0;
+	var fps = 0;
+	this.step = function(dt){
+		var now = Date.now();
+		//Ignoramos el dt que nos indica el método loop()
+		var dt = (now-lastDate);
+		lastDate = now;
+
+		time += dt;
+		++frames;
+
+		fps = frames*1000 / time ;
+
+		if(time>5000){
+			time = 0;
+			frames = 0;
+		}
+	}
+	this.draw = function(ctx){
+		ctx.fillStyle = "#FFFFFF";
+		ctx.textAlign = "left";
+		ctx.font = "bold 16px arial";
+		ctx.fillText(Math.round(fps * 100) / 100,0,20);
+	}
+}
+
+///////////////////////////////////////
+//Fondo de estrellas
+///////////////////////////////////////
+
+var Starfield = function(speed,opacity,numStars,clear) {
+	// Set up the offscreen canvas
+	var stars = document.createElement("canvas");
+	stars.width = Game.width;
+	stars.height = Game.height;
+	var starCtx = stars.getContext("2d");
+
+	var offset = 0;
+
+	// If the clear option is set,
+	// make the background black instead of transparent
+	if(clear) {
+		starCtx.fillStyle = "#000";
+		starCtx.fillRect(0,0,stars.width,stars.height);
+	}
+
+	// Now draw a bunch of random 2 pixel
+	// rectangles onto the offscreen canvas
+	starCtx.fillStyle = "#FFF";
+	starCtx.globalAlpha = opacity;
+	for(var i=0;i<numStars;i++) {
+		starCtx.fillRect(Math.floor(Math.random()*stars.width),
+						 Math.floor(Math.random()*stars.height),
+						 2,
+						 2);
+	}
+
+	// This method is called every frame
+	// to draw the starfield onto the canvas
+	this.draw = function(ctx) {
+		var intOffset = Math.floor(offset);
+		var remaining = stars.height - intOffset;
+		// Draw the top half of the starfield
+		if(intOffset > 0) {
+			ctx.drawImage(stars,
+						0, remaining,
+						stars.width, intOffset,
+						0, 0,
+						stars.width, intOffset);
+		}
+		// Draw the bottom half of the starfield
+		if(remaining > 0) {
+			ctx.drawImage(stars,
+						0, 0,
+						stars.width, remaining,
+						0, intOffset,
+						stars.width, remaining);
+		}
+	};
+
+	// This method is called to update
+	// the starfield
+	this.step = function(dt) {
+		offset += dt * speed;
+		offset = offset % stars.height;
+	};
+
 }
