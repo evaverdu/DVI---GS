@@ -6,7 +6,12 @@ var Game = new function() {
 	// Inicialización del juego
 	// se obtiene el canvas, se cargan los recursos y se llama a callback
 	this.initialize = function(canvasElementId, sprite_data, callback) {
-		this.canvas = document.getElementById(canvasElementId)
+		this.canvas = document.getElementById(canvasElementId);
+
+		this.canvasMultiplier = 1;
+		this.playerOffset = 10;
+		this.setupMobile();
+
 		this.width = this.canvas.width;
 		this.height= this.canvas.height;
 
@@ -16,11 +21,11 @@ var Game = new function() {
 
 		this.setupInput();
 
-		this.canvasMultiplier = 1;
-		this.playerOffset = 10;
-		Game.setBoard(4, new TouchControls());
-
 		this.loop();
+
+		if(this.mobile) {
+			this.setBoard(4,new TouchControls());
+		}
 
 		SpriteSheet.load(sprite_data,callback);
 	};
@@ -68,6 +73,54 @@ var Game = new function() {
 
 	// Change an active game board
 	this.setBoard = function(num,board) { boards[num] = board; };
+
+	this.setupMobile = function() {
+		//hasTouch indica si las funciones táctiles están disponibles
+		var container = document.getElementById("container"),
+						hasTouch = !!('ontouchstart' in window),
+						w = window.innerWidth, h = window.innerHeight;
+		//indicar al juego que estamos en mobile
+		if(hasTouch) { this.mobile = true; }
+
+		//Si la pantalla es demasiado grande o no hay táctil terminamos
+		if(screen.width >= 1280 || !hasTouch) {
+			console.log('Dispositivo no compatible');
+			return false;
+		}
+
+		//Avisamos de rotar la pantalla
+		if(w > h) {
+			alert("Por favor, rota el dispositivo y pulsa ACCEPTAR/OK");
+			w = window.innerWidth; h = window.innerHeight;
+		}
+
+		//Hacemos el contenedor más grande que la pantalla
+		container.style.height = h*2 + "px";
+		//Y hacemos scroll para intentar quitar la barra de dirección del navegador
+		window.scrollTo(0,1);
+		//Utilizamos CSS para ajustar el ancho y alto
+		h = window.innerHeight + 2;
+		container.style.height = h + "px";
+		container.style.width = w + "px";
+		container.style.padding = 0;
+		//Si la pantalla es muy grande (tablet) utilizamos un factor de multiplicación del canvas --> Es más eficiente que reescalar directamente con CSS
+		if(h >= this.canvas.height * 1.75 || w >= this.canvas.height * 1.75) {
+			this.canvasMultiplier = 2;
+			this.canvas.width = w / 2;
+			this.canvas.height = h / 2;
+			this.canvas.style.width = w + "px";
+			this.canvas.style.height = h + "px";
+		} else //Si la pantalla no es demasiado grande reescalamos directamente
+		{
+			this.canvas.width = w;
+			this.canvas.height = h;
+		}
+
+		//Colocamos el canvas de forma absoluta a la coordenada 0,0 de la ventana
+		this.canvas.style.position='absolute';
+		this.canvas.style.left="0px";
+		this.canvas.style.top="0px";
+	}
 }
 
 ///////////////////////////////////////
@@ -413,3 +466,5 @@ var TouchControls = function() {
 	Game.canvas.addEventListener('touchend',this.trackTouch,true);
 	Game.playerOffset = unitWidth + 20;
 };
+
+
