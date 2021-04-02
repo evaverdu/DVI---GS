@@ -31,7 +31,7 @@ var OBJECT_PLAYER = 1,
 	OBJECT_POWERUP = 16;
 
 ///////////////////////////////////////
-//Fondo
+//Fondo DEL FROGGER
 ///////////////////////////////////////
 
 var Background = function(){
@@ -47,12 +47,15 @@ Background.prototype.step = function(dt) {}
 //Frog
 ///////////////////////////////////////
 var Frog = function(){
+	//this.setup('frog',{ vx: 0, vy: 0, frame: 0, reloadTime: 0.25, moveX : 40, moveY: 48 });
 	this.setup('frog',{ vx: 0, vy: 0, frame: 0, reloadTime: 0.25, maxVel: 200 });
 	this.x = Game.width/2 - this.w / 2;
-	this.y = Game.height - 10 - this.h;
+	//this.y = Game.height - 10 - this.h;
+	this.y = Game.height;
 	this.reload = this.reloadTime;
 
 	this.step = function(dt) {
+		
 		if(Game.keys['left']) 		{ this.vx = -this.maxVel; }
 		else if(Game.keys['right']) { this.vx = this.maxVel; }
 		else if(Game.keys['up'])	{ this.vy = -this.maxVel;}
@@ -61,7 +64,20 @@ var Frog = function(){
 
 		this.x += this.vx * dt;
 		this.y += this.vy * dt;
+		/*		
+		if(Game.keys['left']) 		{ 
+			this.vx = -this.maxVel; }
+		else if(Game.keys['right']) { 
+			this.vx = this.maxVel; }
+		else if(Game.keys['up'])	{ 
+			this.vy = -this.maxVel;}
+		else if(Game.keys['down'])	{ 
+			this.vy = this.maxVel;}
+		else { this.vx = 0; this.vy = 0;}	
 
+		this.x += this.vx * dt;
+		this.y += this.vy * dt;
+*/
 		if(this.x < 0) { this.x = 0; }
 		else if(this.x > Game.width - this.w) {
 			this.x = Game.width - this.w
@@ -71,11 +87,54 @@ var Frog = function(){
 		else if(this.y > Game.height - this.h) {
 			this.y = Game.height - this.h
 		}
+
 	}
 }
 
 Frog.prototype = new Sprite();
 Frog.prototype.type = OBJECT_PLAYER;
+
+///////////////////////////////////////
+//Coche
+///////////////////////////////////////
+var Car = function(blueprint,override) {
+	this.merge(this.baseParameters);
+	this.setup(blueprint.sprite,blueprint);
+	this.merge(override);
+}
+
+Car.prototype = new Sprite();
+Car.prototype.type =  OBJECT_ENEMY;
+Car.prototype.baseParameters = { A: 0, B: 0, C: 0, D: 0,
+									E: 0, F: 0, G: 0, H: 0,
+									t: 0 };
+
+Car.prototype.step = function(dt) {
+	this.t += dt;
+	this.vx = this.A + this.B * Math.sin(this.C * this.t + this.D);
+	this.vy = this.E + this.F * Math.sin(this.G * this.t + this.H);
+	this.x += this.vx * dt;
+	this.y += this.vy * dt;
+/*
+	var collision = this.board.collide(this,OBJECT_PLAYER);
+	if(collision) {
+		collision.hit(this.damage);
+		this.board.remove(this);
+	}
+*/
+	if(this.y > Game.height ||
+		this.x < -this.w ||
+		this.x > Game.width) {
+			this.board.remove(this);
+	}
+}
+
+Car.prototype.draw = function(ctx) {
+	SpriteSheet.draw(ctx,this.sprite,this.x,this.y);
+}
+
+
+
 
 ///////////////////////////////////////
 //Objeto jugador
