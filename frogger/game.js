@@ -4,9 +4,9 @@ var sprites = {
 		frog: {sx:120, sy:340, w:40, h:48, frames:1},
 		turtle: { sx: 5, sy: 285, w: 51, h: 47, frames: 4 },
 		dead: { sx: 210, sy: 128, w: 48, h: 35, frames: 4 },
-		car_1: { sx: 3, sy: 6, w: 99, h: 48, frames: 1 },
-		car_2: { sx: 3, sy: 106, w: 99, h: 48, frames: 1 },
-		car_3: { sx: 3, sy: 210, w: 99, h: 48, frames: 1  },
+		car_1: { sx: 4, sy: 6, w: 99, h: 48, frames: 1 },
+		car_2: { sx: 106, sy: 6, w: 99, h: 48, frames: 1 },
+		car_3: { sx: 210, sy: 6, w: 99, h: 48, frames: 1  },
 		slog: { sx: 268, sy: 169, w: 140, h: 46, frames: 1 },
 		mlog: { sx: 5, sy: 119, w: 197, h: 46, frames: 1 },
 		blog: { sx: 5, sy: 169, w: 260, h: 46, frames: 1 },
@@ -28,21 +28,26 @@ var enemies = {
 };
 
 var cars = {
-	car1: { x: 0, y: 337, sprite: 'car_1', health: 10,
+	car1: { x: -99, y: 337, sprite: 'car_1', health: 10,
 				A: 100 },
 	car2: { x: -99, y: 385, sprite: 'car_2', health: 10,
 				A: 150 },
 	car3: { x: -99, y: 433, sprite: 'car_3', health: 10,
-				A: 200 },
-	smalltruck: { x: -128, y: -50, sprite: 'small_truck', health: 20,
-				A: 100 },
-	bigtruck: { x: -206, y: -50, sprite: 'big_truck', health: 10,
+				A: 300 },
+	smalltruck: { x: -128, y: 481, sprite: 'small_truck', health: 20,
+				A: 150 },
+	bigtruck: { x: 550, y: 529, sprite: 'big_truck', health: 10,
 				A: -100 }
 };
 
 var level1 = [
 	// Start, End, Gap, Type, Override
-	[ 0, 4000, 500, 'step' ],
+	[ 0, 999999, 3000, 'car1' ],
+	[ 0, 999999, 4000, 'car2' ],
+	[ 0, 999999, 3000, 'car3' ],
+	[ 0, 999999, 5000, 'smalltruck' ],
+	[ 0, 999999, 7000, 'bigtruck' ]
+	/*
 	[ 6000, 13000, 800, 'ltr' ],
 	[ 12000, 16000, 400, 'circle' ],
 	[ 18200, 20000, 500, 'straight', { x: 150 } ],
@@ -50,6 +55,7 @@ var level1 = [
 	[ 18400, 20000, 500, 'straight', { x: 200 } ],
 	[ 22000, 25000, 400, 'wiggle', { x: 300 }],
 	[ 22000, 25000, 400, 'wiggle', { x: 200 }]
+	*/
 ];
 
 function startGame() { 
@@ -65,7 +71,8 @@ var playGame = function() {
 	Game.setBoard(0,board_0);
 	board_1.add(new Frog());
 	//SpriteSheet.draw(Game.ctx, "car_1", 100,100);
-	board_1.add(new Car(cars.car1));
+	//board_1.add(new Car(cars.car1));
+	board_1.add(new Level(level1,winGame));
 	Game.setBoard(1,board_1);
 };
 

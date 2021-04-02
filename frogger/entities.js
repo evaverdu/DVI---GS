@@ -93,6 +93,12 @@ var Frog = function(){
 
 Frog.prototype = new Sprite();
 Frog.prototype.type = OBJECT_PLAYER;
+	
+Frog.prototype.hit = function(damage) {
+	if(this.board.remove(this)) {
+		loseGame();
+	}
+}
 
 ///////////////////////////////////////
 //Coche
@@ -115,13 +121,13 @@ Car.prototype.step = function(dt) {
 	this.vy = this.E + this.F * Math.sin(this.G * this.t + this.H);
 	this.x += this.vx * dt;
 	this.y += this.vy * dt;
-/*
+
 	var collision = this.board.collide(this,OBJECT_PLAYER);
 	if(collision) {
 		collision.hit(this.damage);
 		this.board.remove(this);
 	}
-*/
+
 	if(this.y > Game.height ||
 		this.x < -this.w ||
 		this.x > Game.width) {
@@ -271,6 +277,26 @@ var Explosion = function(centerX,centerY) {
 Explosion.prototype = new Sprite();
 
 Explosion.prototype.step = function(dt) {
+	this.frame = Math.floor(this.subFrame++ / 3);
+	if(this.subFrame >= 36) {
+		this.board.remove(this);
+	}
+};
+
+///////////////////////////////////////
+//Dead animation
+///////////////////////////////////////
+
+var Dead = function(centerX,centerY) {
+	this.setup('dead', { frame: 0 });
+	this.x = centerX - this.w/2;
+	this.y = centerY - this.h/2;
+	this.subFrame = 0;
+};
+
+Dead.prototype = new Sprite();
+
+Dead.prototype.step = function(dt) {
 	this.frame = Math.floor(this.subFrame++ / 3);
 	if(this.subFrame >= 36) {
 		this.board.remove(this);

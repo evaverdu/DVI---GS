@@ -214,6 +214,7 @@ var Level = function(levelData,callback) {
 Level.prototype.draw = function(ctx) { }
 
 Level.prototype.step = function(dt) {
+
 	var idx = 0, remove = [], curShip = null;
 	// Update the current time offset
 	this.t += dt * 1000;
@@ -228,10 +229,10 @@ Level.prototype.step = function(dt) {
 			remove.push(curShip);
 		} else if(curShip[0] < this.t) {
 		// Get the enemy definition blueprint
-			var enemy = enemies[curShip[3]],
+			var car = cars[curShip[3]],
 				override = curShip[4];
 			// Add a new enemy with the blueprint and override
-			this.board.add(new Enemy(enemy,override));
+			this.board.add(new Car(car,override));
 			// Increment the start time by the gap
 			curShip[0] += curShip[2];
 		}
@@ -249,6 +250,7 @@ Level.prototype.step = function(dt) {
 	if(this.levelData.length == 0 && this.board.cnt[OBJECT_ENEMY] == 0) {
 		if(this.callback) this.callback();
 	}
+	
 }
 
 ///////////////////////////////////////
