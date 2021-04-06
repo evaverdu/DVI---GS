@@ -229,12 +229,33 @@ Level.prototype.step = function(dt) {
 			remove.push(curShip);
 		} else if(curShip[0] < this.t) {
 		// Get the enemy definition blueprint
+			if(curShip[3] == 'trunk_s' || curShip[3] == 'trunk_m' || curShip[3] == 'trunk_b'){
+				var trunk = trunks[curShip[3]],
+				override = curShip[4];
+				// Add a new enemy with the blueprint and override
+				this.board.add(new Trunk(trunk,override));
+			}
+			else if(curShip[3] == 'turtle'){
+				var turtle = turtles[curShip[3]],
+				override = curShip[4];
+				// Add a new enemy with the blueprint and override
+				this.board.add(new Turtle(turtle,override));
+			}
+			else{
+				var car = cars[curShip[3]],
+				override = curShip[4];
+				// Add a new enemy with the blueprint and override
+				this.board.add(new Car(car,override));
+			}
+			curShip[0] += curShip[2];
+			/*
 			var car = cars[curShip[3]],
 				override = curShip[4];
 			// Add a new enemy with the blueprint and override
 			this.board.add(new Car(car,override));
 			// Increment the start time by the gap
 			curShip[0] += curShip[2];
+			*/
 		}
 		idx++;
 	}

@@ -96,6 +96,14 @@ Frog.prototype.type = OBJECT_PLAYER;
 	
 Frog.prototype.hit = function(damage) {
 	if(this.board.remove(this)) {
+			this.board.add(new Dead(this.x + this.w/2,
+										 this.y + this.h/2));
+			loseGame();
+		}
+}
+
+Frog.prototype.onTrunk = function(vt) {
+	if(this.board.remove(this)) {
 		loseGame();
 	}
 }
@@ -125,7 +133,7 @@ Car.prototype.step = function(dt) {
 	var collision = this.board.collide(this,OBJECT_PLAYER);
 	if(collision) {
 		collision.hit(this.damage);
-		this.board.remove(this);
+		//this.board.remove(this);
 	}
 
 	if(this.y > Game.height ||
@@ -139,8 +147,109 @@ Car.prototype.draw = function(ctx) {
 	SpriteSheet.draw(ctx,this.sprite,this.x,this.y);
 }
 
+///////////////////////////////////////
+//Troncos
+///////////////////////////////////////
+var Trunk = function(blueprint,override) {
+	this.merge(this.baseParameters);
+	this.setup(blueprint.sprite,blueprint);
+	this.merge(override);
+}
 
+Trunk.prototype = new Sprite();
+//Trunk.prototype.type =  OBJECT_ENEMY;
+Trunk.prototype.baseParameters = { A: 0, B: 0, C: 0, D: 0,
+									E: 0, F: 0, G: 0, H: 0,
+									t: 0 };
 
+Trunk.prototype.step = function(dt) {
+	this.t += dt;
+	this.vx = this.A + this.B * Math.sin(this.C * this.t + this.D);
+	this.vy = this.E + this.F * Math.sin(this.G * this.t + this.H);
+	this.x += this.vx * dt;
+	this.y += this.vy * dt;
+
+	/*
+	var collision = this.board.collide(this,OBJECT_PLAYER);
+	if(collision) {
+		collision.hit(this.damage);
+		//this.board.remove(this);
+	}
+	*/
+	if(this.y > Game.height ||
+		this.x < -this.w ||
+		this.x > Game.width) {
+			this.board.remove(this);
+	}
+}
+
+Trunk.prototype.draw = function(ctx) {
+	SpriteSheet.draw(ctx,this.sprite,this.x,this.y);
+}
+
+///////////////////////////////////////
+//Tortugas
+///////////////////////////////////////
+var Turtle = function(blueprint,override) {
+	this.merge(this.baseParameters);
+	this.setup(blueprint.sprite,blueprint);
+	this.merge(override);
+}
+
+Turtle.prototype = new Sprite();
+//Trunk.prototype.type =  OBJECT_ENEMY;
+Turtle.prototype.baseParameters = { A: 0, B: 0, C: 0, D: 0,
+									E: 0, F: 0, G: 0, H: 0,
+									t: 0 };
+
+Turtle.prototype.step = function(dt) {
+	this.t += dt;
+	this.vx = this.A + this.B * Math.sin(this.C * this.t + this.D);
+	this.vy = this.E + this.F * Math.sin(this.G * this.t + this.H);
+	this.x += this.vx * dt;
+	this.y += this.vy * dt;
+
+	/*
+	var collision = this.board.collide(this,OBJECT_PLAYER);
+	if(collision) {
+		collision.hit(this.damage);
+		//this.board.remove(this);
+	}
+	*/
+	if(this.y > Game.height ||
+		this.x < -this.w ||
+		this.x > Game.width) {
+			this.board.remove(this);
+	}
+}
+
+Turtle.prototype.draw = function(ctx) {
+	SpriteSheet.draw(ctx,this.sprite,this.x,this.y);
+}
+
+///////////////////////////////////////
+//Agua
+///////////////////////////////////////
+var Water = function(blueprint,override) {
+	this.merge(this.baseParameters);
+	this.setup(blueprint.sprite,blueprint);
+	this.merge(override);
+}
+
+Water.prototype = new Sprite();
+Water.prototype.type =  OBJECT_ENEMY;
+
+Water.prototype.step = function(dt) {
+	
+	var collision = this.board.collide(this,OBJECT_PLAYER);
+	if(collision) {
+		collision.hit(this.damage);
+		//this.board.remove(this);
+	}
+	
+}
+
+Water.prototype.draw = function(ctx) {}
 
 ///////////////////////////////////////
 //Objeto jugador
@@ -297,7 +406,7 @@ var Dead = function(centerX,centerY) {
 Dead.prototype = new Sprite();
 
 Dead.prototype.step = function(dt) {
-	this.frame = Math.floor(this.subFrame++ / 3);
+	this.frame = Math.floor(this.subFrame++ / 10);
 	if(this.subFrame >= 36) {
 		this.board.remove(this);
 	}

@@ -1,15 +1,16 @@
 var sprites = {
 		title:{sx: 0, sy: 392, w:277, h:171, frames: 1 },
 		background: { sx: 421, sy: 0, w: 550, h: 625, frames: 1 },
+		water: { sx: 421, sy: 49, w: 550, h: 240, frames: 1 },
 		frog: {sx:120, sy:340, w:40, h:48, frames:1},
-		turtle: { sx: 5, sy: 285, w: 51, h: 47, frames: 4 },
-		dead: { sx: 210, sy: 128, w: 48, h: 35, frames: 4 },
+		turtle: { sx: 5, sy: 285, w: 51, h: 48, frames: 4 },
+		dead: { sx: 210, sy: 128, w: 48, h: 35, frames: 3 },
 		car_1: { sx: 4, sy: 6, w: 99, h: 48, frames: 1 },
 		car_2: { sx: 106, sy: 6, w: 99, h: 48, frames: 1 },
 		car_3: { sx: 210, sy: 6, w: 99, h: 48, frames: 1  },
-		slog: { sx: 268, sy: 169, w: 140, h: 46, frames: 1 },
-		mlog: { sx: 5, sy: 119, w: 197, h: 46, frames: 1 },
-		blog: { sx: 5, sy: 169, w: 260, h: 46, frames: 1 },
+		s_log: { sx: 268, sy: 169, w: 140, h: 48, frames: 1 },
+		m_log: { sx: 5, sy: 119, w: 197, h: 48, frames: 1 },
+		b_log: { sx: 5, sy: 169, w: 260, h: 48, frames: 1 },
 		small_truck: { sx: 5, sy: 62, w: 128, h: 48, frames: 1 },
 		big_truck: { sx:146 , sy: 62, w: 206, h: 48, frames: 1 }		
 };
@@ -37,8 +38,24 @@ var cars = {
 	smalltruck: { x: -128, y: 481, sprite: 'small_truck', health: 20,
 				A: 150 },
 	bigtruck: { x: 550, y: 529, sprite: 'big_truck', health: 10,
-				A: -100 }
+				A: -100 },
 };
+
+var trunks = {
+	trunk_s:{ x: -140, y: 49, sprite: 's_log', health: 10,
+				A: 100 },
+	trunk_m:{ x: -197, y: 145, sprite: 'm_log', health: 10,
+				A: 100 },
+	trunk_b:{ x: -260, y: 241, sprite: 'b_log', health: 10,
+				A: 100 }
+}
+
+var turtles = {
+	turtle:{ x: -51, y: 0, sprite: 'turtle', health: 10,
+				A: 100 },
+	
+	
+}
 
 var level1 = [
 	// Start, End, Gap, Type, Override
@@ -46,7 +63,13 @@ var level1 = [
 	[ 0, 999999, 4000, 'car2' ],
 	[ 0, 999999, 3000, 'car3' ],
 	[ 0, 999999, 5000, 'smalltruck' ],
-	[ 0, 999999, 7000, 'bigtruck' ]
+	[ 0, 999999, 7000, 'bigtruck' ],
+	
+	[ 0, 999999, 4000, 'trunk_s' ],
+	[ 30, 999999, 5000, 'trunk_b' ],
+	[ 0, 999999, 7000, 'trunk_m' ],
+	[ 0, 999999, 2000, 'turtle', {y : 193} ],
+	[ 5, 999999, 1000, 'turtle', { y:97 , A: 125}],
 	/*
 	[ 6000, 13000, 800, 'ltr' ],
 	[ 12000, 16000, 400, 'circle' ],
@@ -69,10 +92,12 @@ var playGame = function() {
 	var board_1 = new GameBoard();
 	board_0.add(new Background());
 	Game.setBoard(0,board_0);
-	board_1.add(new Frog());
+	
 	//SpriteSheet.draw(Game.ctx, "car_1", 100,100);
 	//board_1.add(new Car(cars.car1));
 	board_1.add(new Level(level1,winGame));
+	board_1.add(new Frog());
+	//board_1.add(new Water());
 	Game.setBoard(1,board_1);
 };
 
