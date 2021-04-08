@@ -48,7 +48,7 @@ var Game = new function() {
 		var dt = 1000/fps;
 
 		// Cada pasada borramos el canvas
-		Game.ctx.fillStyle = "#000";
+		Game.ctx.fillStyle = "#f4f4f4";
 		Game.ctx.fillRect(0,0,Game.width,Game.height);
 
 		// y actualizamos y dibujamos todas las entidades
@@ -99,16 +99,20 @@ var TitleScreen = function TitleScreen(title,subtitle,callback) {
 	var up = false;
 
 	this.step = function(dt) {
-		if( ! Game.keys['fire'] ) up = true;
-		if( up && Game.keys['fire'] && callback ) callback();
+		if( ! Game.keys['enter'] ) up = true;
+		if( up && Game.keys['enter'] && callback ) callback();
 	};
 	this.draw = function(ctx) {
-		ctx.fillStyle = "#FFFFFF";
+		//SpriteSheet.draw(Game.ctx, "background" , 0, 0);
+		//SpriteSheet.draw(Game.ctx, "title" ,Game.width/2, Game.height/2);
+		SpriteSheet.draw(Game.ctx, "title" ,Game.width/2 - 139, 100);
+		//ctx.fillStile = "#f4f4f4";
 		ctx.textAlign = "center";
 		ctx.font = "bold 40px bangers";
 		ctx.fillText(title,Game.width/2,Game.height/2);
+		
 		ctx.font = "bold 20px bangers";
-		ctx.fillText(subtitle,Game.width/2,Game.height/2 + 140);
+		ctx.fillText(subtitle,Game.width/2,Game.height/2 + 40);
 	};
 };
 
@@ -299,7 +303,7 @@ var analytics = new function(){
 		}
 	}
 	this.draw = function(ctx){
-		ctx.fillStyle = "#FFFFFF";
+		ctx.fillStyle = "#f4f4f4";
 		ctx.textAlign = "left";
 		ctx.font = "bold 16px arial";
 		ctx.fillText(Math.round(fps * 100) / 100,0,20);

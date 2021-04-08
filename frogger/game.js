@@ -1,7 +1,8 @@
 var sprites = {
-		title:{sx: 0, sy: 392, w:277, h:171, frames: 1 },
+		title:{sx: 0, sy: 392, w:278, h:171, frames: 1 },
 		background: { sx: 421, sy: 0, w: 550, h: 625, frames: 1 },
 		water: { sx: 421, sy: 49, w: 550, h: 240, frames: 1 },
+		home: { sx: 421, sy: 0, w: 550, h: 49, frames: 1 },
 		frog: {sx:120, sy:340, w:40, h:48, frames:1},
 		turtle: { sx: 5, sy: 285, w: 51, h: 48, frames: 4 },
 		dead: { sx: 210, sy: 128, w: 48, h: 35, frames: 3 },
@@ -82,17 +83,17 @@ var level1 = [
 ];
 
 function startGame() { 
-	Game.setBoard(0,new TitleScreen("Alien Invasion",
+	var board_0 = new GameBoard();
+	board_0.add(new Background());
+	Game.setBoard(0,board_0);
+	Game.setBoard(1,new TitleScreen("Start",
 									"Press Enter to start playing",
 									playGame));
 }
 
 var playGame = function() {
-	var board_0 = new GameBoard();
+	Game.setBoard(2,new GameBoard());
 	var board_1 = new GameBoard();
-	board_0.add(new Background());
-	Game.setBoard(0,board_0);
-	
 	//SpriteSheet.draw(Game.ctx, "car_1", 100,100);
 	//board_1.add(new Car(cars.car1));
 	board_1.add(new Level(level1,winGame));
@@ -102,14 +103,14 @@ var playGame = function() {
 };
 
 var winGame = function() {
-	Game.setBoard(0,new TitleScreen("You win!",
-	"Press fire to play again",
+	Game.setBoard(2,new TitleScreen("You win!",
+	"Press enter to play again",
 	playGame));
 };
 
 var loseGame = function() {
-	Game.setBoard(0,new TitleScreen("You lose!",
-	"Press fire to play again",
+	Game.setBoard(2,new TitleScreen("You lose!",
+	"Press enter to play again",
 	playGame));
 };
 
@@ -118,5 +119,5 @@ var loseGame = function() {
 // y este después de realizar la inicialización llamará a
 // startGame
 window.addEventListener("load", function() {
-	Game.initialize("game",sprites,playGame);
+	Game.initialize("game",sprites,startGame);
 });

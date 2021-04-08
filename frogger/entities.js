@@ -368,6 +368,7 @@ Enemy.prototype.step = function(dt) {
 			this.board.remove(this);
 	}
 }
+
 Enemy.prototype.draw = function(ctx) {
 	SpriteSheet.draw(ctx,this.sprite,this.x,this.y);
 }
