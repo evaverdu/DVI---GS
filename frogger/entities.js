@@ -47,59 +47,69 @@ Background.prototype.step = function(dt) {}
 //Frog
 ///////////////////////////////////////
 var Frog = function(){
+	//Variable booleana que sea false 
 	//this.setup('frog',{ vx: 0, vy: 0, frame: 0, reloadTime: 0.25, moveX : 40, moveY: 48 });
 	this.setup('frog',{ vx: 0, vy: 0, frame: 0, reloadTime: 0.25, maxVel: 200 });
 	this.x = Game.width/2 - this.w / 2;
 	//this.y = Game.height - 10 - this.h;
-	this.y = Game.height;
+	this.y = Game.height - this.h;
 	this.reload = this.reloadTime;
-
-	this.step = function(dt) {
-		
-		if(Game.keys['left']) 		{ this.vx = -this.maxVel; }
-		else if(Game.keys['right']) { this.vx = this.maxVel; }
-		else if(Game.keys['up'])	{ this.vy = -this.maxVel;}
-		else if(Game.keys['down'])	{ this.vy = this.maxVel;}
-		else { this.vx = 0; this.vy = 0;}
-
-		this.x += this.vx * dt;
-		this.y += this.vy * dt;
-		/*		
-		if(Game.keys['left']) 		{ 
-			this.vx = -this.maxVel; }
-		else if(Game.keys['right']) { 
-			this.vx = this.maxVel; }
-		else if(Game.keys['up'])	{ 
-			this.vy = -this.maxVel;}
-		else if(Game.keys['down'])	{ 
-			this.vy = this.maxVel;}
-		else { this.vx = 0; this.vy = 0;}	
-
-		this.x += this.vx * dt;
-		this.y += this.vy * dt;
-*/
-		if(this.x < 0) { this.x = 0; }
-		else if(this.x > Game.width - this.w) {
-			this.x = Game.width - this.w
-		}
-
-		if(this.y < 0) { this.y = 0; }
-		else if(this.y > Game.height - this.h) {
-			this.y = Game.height - this.h
-		}
-
-	}
+	this.delaytime = -1;
+	this.dx = 0;
+	this.dy = 0;
+	this.row = 1;
+	this.col = 0;
 }
 
 Frog.prototype = new Sprite();
 Frog.prototype.type = OBJECT_PLAYER;
-	
+
+Frog.prototype.step = function(dt) {
+	//if !this.moving haces lo siengueinte delay ttime(500)
+	if(this.delaytime < 0){
+		if(Game.keys['left']) 		{ this.vx = -this.maxVel; this.delaytime = 0.3; this.dx = this.x - this.w; }
+		else if(Game.keys['right']) { this.vx =  this.maxVel; this.delaytime = 0.3; this.dx = this.x + this.w; }
+		else if(Game.keys['up'])	{ this.vy = -this.maxVel; this.delaytime = 0.3; this.row++; this.dy = Game.height - this.h * this.row;}
+		else if(Game.keys['down'])	{ this.vy =  this.maxVel; this.delaytime = 0.3; this.row--;  this.dy = Game.height - this.h * this.row;}
+		else { this.vx = 0; this.vy = 0;}
+	}
+	else{
+		this.delaytime -= dt;
+	}
+
+	this.x += this.vx * dt ;
+	if ( ((this.vx < 0) && (this.x < this.dx)) || ((this.vx > 0) && (this.x > this.dx)) ){
+		this.x = this.dx;
+	}
+
+	this.y += this.vy * dt;
+	//console.log (this.vy + " " + this.y + " " + this.dy);
+	if ((this.vy < 0) && (this.y < this.dy)){
+		this.y = this.dy;
+	}
+	if((this.vy > 0) && (this.y > this.dy)){
+		this.y = this.dy;
+	}
+
+	if(this.x < 0) { this.x = 0; }
+	else if(this.x > Game.width - this.w) {
+		this.x = Game.width - this.w
+	}
+
+	if(this.y < 0) { this.y = 0; }
+	else if(this.y > Game.height - this.h) {
+		this.y = Game.height - this.h
+	}
+}
+
 Frog.prototype.hit = function(damage) {
+	
 	if(this.board.remove(this)) {
-			this.board.add(new Dead(this.x + this.w/2,
-										 this.y + this.h/2));
-			loseGame();
-		}
+		this.board.add(new Dead(this.x + this.w/2,
+									 this.y + this.h/2));
+		loseGame();
+	}
+		
 }
 
 Frog.prototype.onTrunk = function(vt) {
