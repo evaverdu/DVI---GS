@@ -1,7 +1,6 @@
 ///////////////////////////////////////
 //Objeto que maneja logica del juego.
 /////////////////////////////////////// 
-//document.getElementById("game").addEventListener("click", function(){console.log("click")});
 var Game = new function() {
 	// Inicialización del juego
 	// se obtiene el canvas, se cargan los recursos y se llama a callback
@@ -252,14 +251,6 @@ Level.prototype.step = function(dt) {
 				this.board.add(new Car(car,override));
 			}
 			curShip[0] += curShip[2];
-			/*
-			var car = cars[curShip[3]],
-				override = curShip[4];
-			// Add a new enemy with the blueprint and override
-			this.board.add(new Car(car,override));
-			// Increment the start time by the gap
-			curShip[0] += curShip[2];
-			*/
 		}
 		idx++;
 	}
@@ -277,7 +268,65 @@ Level.prototype.step = function(dt) {
 	}
 	
 }
+///////////////////////////////////////
+//Generador de coches, troncos y tortugas
+///////////////////////////////////////
+var Spawners = function(levelData){
+	this.levelData = [];
+	for(var i = 0; i < levelData.length; i++) {
+		this.levelData.push(Object.create(levelData[i]));
+	}
+	this.t = 0;
+}
 
+Spawners.prototype.draw = function(ctx) { }
+
+Spawners.prototype.step = function(dt) {
+	var idx = 0, remove = [], curShip = null;
+	// Update the current time offset
+	this.t += dt * 1000;
+	// Example levelData
+	// Start, Gap, Type, Override
+	// [[ 0, 500, 'step', { x: 100 } ]
+
+	while((curShip = this.levelData[idx]) && (curShip[0] < this.t + 2000)) {
+		if(curShip[0] < this.t) {
+		// Get the enemy definition blueprint
+			if(curShip[2] == 'trunk_s' || curShip[2] == 'trunk_m' || curShip[2] == 'trunk_b'){
+				var trunk = trunks[curShip[2]],
+				override = curShip[3];
+				// Add a new enemy with the blueprint and override
+				this.board.add(new Trunk(trunk,override));
+			}
+			else if(curShip[2] == 'turtle'){
+				var turtle = turtles[curShip[2]],
+				override = curShip[3];
+				// Add a new enemy with the blueprint and override
+				this.board.add(new Turtle(turtle,override));
+			}
+			else{
+				var car = cars[curShip[2]],
+				override = curShip[3];
+				// Add a new enemy with the blueprint and override
+				this.board.add(new Car(car,override));
+			}
+			curShip[0] += curShip[1];
+		}
+		idx++;
+	}
+
+	// Remove any objects from the levelData that have passed
+	for(var i = 0, len = remove.length; i < len; i++) {
+		var idx = this.levelData.indexOf(remove[i]);
+		if(idx != -1) this.levelData.splice(idx,1);
+	}
+
+	// If there are no more enemies on the board or in
+	// levelData, this level is done
+	if(this.levelData.length == 0 && this.board.cnt[OBJECT_ENEMY] == 0) {
+		if(this.callback) this.callback();
+	}
+}
 ///////////////////////////////////////
 //Analiticas
 ///////////////////////////////////////

@@ -16,46 +16,22 @@ var sprites = {
 		big_truck: { sx:146 , sy: 62, w: 206, h: 48, frames: 1 }		
 };
 
-var enemies = {
-	straight: { x: 0, y: -50, sprite: 'enemy_ship', health: 10,
-				E: 100 },
-	ltr: { x: 0, y: -100, sprite: 'enemy_purple', health: 10,
-				B: 200, C: 1, E: 200 },
-	circle: { x: 400, y: -50, sprite: 'enemy_circle', health: 10,
-				A: 0, B: -200, C: 1, E: 20, F: 200, G: 1, H: Math.PI/2 },
-	wiggle: { x: 100, y: -50, sprite: 'enemy_bee', health: 20,
-				B: 100, C: 4, E: 100 },
-	step: { x: 0, y: -50, sprite: 'enemy_circle', health: 10,
-				B: 300, C: 1.5, E: 60 }
-};
-
 var cars = {
-	car1: { x: -99, y: 337, sprite: 'car_1', health: 10,
-				A: 100 },
-	car2: { x: -99, y: 385, sprite: 'car_2', health: 10,
-				A: 150 },
-	car3: { x: -99, y: 433, sprite: 'car_3', health: 10,
-				A: 300 },
-	smalltruck: { x: -128, y: 481, sprite: 'small_truck', health: 20,
-				A: 150 },
-	bigtruck: { x: 550, y: 529, sprite: 'big_truck', health: 10,
-				A: -100 },
+	car1: 		{ x: -99,  y: 337, sprite: 'car_1',       V: 100 },
+	car2: 		{ x: -99,  y: 385, sprite: 'car_2',		  V: 150 },
+	car3: 		{ x: -99,  y: 433, sprite: 'car_3',       V: 300 },
+	smalltruck: { x: -128, y: 481, sprite: 'small_truck', V: 150 },
+	bigtruck: 	{ x: 550,  y: 529, sprite: 'big_truck',   V: -100 },
 };
 
 var trunks = {
-	trunk_s:{ x: -140, y: 49, sprite: 's_log', health: 10,
-				A: 100 },
-	trunk_m:{ x: -197, y: 145, sprite: 'm_log', health: 10,
-				A: 100 },
-	trunk_b:{ x: -260, y: 241, sprite: 'b_log', health: 10,
-				A: 100 }
+	trunk_s:{ x: -140, y: 49,  sprite: 's_log', V: 100 },
+	trunk_m:{ x: -197, y: 145, sprite: 'm_log', V: 150 },
+	trunk_b:{ x: -260, y: 241, sprite: 'b_log', V: 100 },
 }
 
 var turtles = {
-	turtle:{ x: -51, y: 0, sprite: 'turtle', health: 10,
-				A: 100 },
-	
-	
+	turtle:{ x: -51, y: 0, sprite: 'turtle', V: 100 },
 }
 
 var level1 = [
@@ -69,8 +45,8 @@ var level1 = [
 	[ 0, 999999, 4000, 'trunk_s' ],
 	[ 30, 999999, 5000, 'trunk_b' ],
 	[ 0, 999999, 7000, 'trunk_m' ],
-	[ 0, 999999, 2000, 'turtle', {y : 193} ],
-	[ 5, 999999, 1000, 'turtle', { y:97 , A: 125}],
+	[ 0, 999999, 2000, 'turtle', { y : 193} ],
+	[ 5, 999999, 1000, 'turtle', { y: 97 , V: 125}],
 	/*
 	[ 6000, 13000, 800, 'ltr' ],
 	[ 12000, 16000, 400, 'circle' ],
@@ -81,6 +57,20 @@ var level1 = [
 	[ 22000, 25000, 400, 'wiggle', { x: 200 }]
 	*/
 ];
+
+var level_1 = [
+	[ 0, 3000, 'car1' ],
+	[ 0, 4000, 'car2' ],
+	[ 0, 3000, 'car3' ],
+	[ 0, 5000, 'smalltruck' ],
+	[ 0, 7000, 'bigtruck' ],
+	
+	[ 0,  4000, 'trunk_s' ],
+	[ 30, 5000, 'trunk_b' ],
+	[ 0,  7000, 'trunk_m' ],
+	[ 0,  2000, 'turtle', { y: 193}],
+	[ 5,  1000, 'turtle', { y: 97 , V: 125}],
+]
 
 function startGame() { 
 	var board_0 = new GameBoard();
@@ -94,11 +84,10 @@ function startGame() {
 var playGame = function() {
 	Game.setBoard(2,new GameBoard());
 	var board_1 = new GameBoard();
-	//SpriteSheet.draw(Game.ctx, "car_1", 100,100);
-	//board_1.add(new Car(cars.car1));
-	board_1.add(new Level(level1,winGame));
+	
 	board_1.add(new Frog());
-	//board_1.add(new Water());
+	//board_1.add(new Level(level1,winGame));
+	board_1.add(new Spawners(level_1));
 	Game.setBoard(1,board_1);
 };
 
@@ -114,10 +103,6 @@ var loseGame = function() {
 	playGame));
 };
 
-// Indica que se llame al método de inicialización una vez
-// se haya terminado de cargar la página HTML
-// y este después de realizar la inicialización llamará a
-// startGame
 window.addEventListener("load", function() {
 	Game.initialize("game",sprites,startGame);
 });
