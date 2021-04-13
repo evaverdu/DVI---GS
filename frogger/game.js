@@ -19,7 +19,7 @@ var sprites = {
 var cars = {
 	car1: 		{ x: -99,  y: 337, sprite: 'car_1',       V: 100 },
 	car2: 		{ x: -99,  y: 385, sprite: 'car_2',		  V: 150 },
-	car3: 		{ x: -99,  y: 433, sprite: 'car_3',       V: 300 },
+	car3: 		{ x: -99,  y: 433, sprite: 'car_3',       V: 200 },
 	smalltruck: { x: -128, y: 481, sprite: 'small_truck', V: 150 },
 	bigtruck: 	{ x: 550,  y: 529, sprite: 'big_truck',   V: -100 },
 };
@@ -34,30 +34,6 @@ var turtles = {
 	turtle:{ x: -51, y: 0, sprite: 'turtle', V: 100 },
 }
 
-var level1 = [
-	// Start, End, Gap, Type, Override
-	[ 0, 999999, 3000, 'car1' ],
-	[ 0, 999999, 4000, 'car2' ],
-	[ 0, 999999, 3000, 'car3' ],
-	[ 0, 999999, 5000, 'smalltruck' ],
-	[ 0, 999999, 7000, 'bigtruck' ],
-	
-	[ 0, 999999, 4000, 'trunk_s' ],
-	[ 30, 999999, 5000, 'trunk_b' ],
-	[ 0, 999999, 7000, 'trunk_m' ],
-	[ 0, 999999, 2000, 'turtle', { y : 193} ],
-	[ 5, 999999, 1000, 'turtle', { y: 97 , V: 125}],
-	/*
-	[ 6000, 13000, 800, 'ltr' ],
-	[ 12000, 16000, 400, 'circle' ],
-	[ 18200, 20000, 500, 'straight', { x: 150 } ],
-	[ 18200, 20000, 500, 'straight', { x: 100 } ],
-	[ 18400, 20000, 500, 'straight', { x: 200 } ],
-	[ 22000, 25000, 400, 'wiggle', { x: 300 }],
-	[ 22000, 25000, 400, 'wiggle', { x: 200 }]
-	*/
-];
-
 var level_1 = [
 	[ 0, 3000, 'car1' ],
 	[ 0, 4000, 'car2' ],
@@ -66,10 +42,10 @@ var level_1 = [
 	[ 0, 7000, 'bigtruck' ],
 	
 	[ 0,  4000, 'trunk_s' ],
-	[ 30, 5000, 'trunk_b' ],
+	[ 0, 5000, 'trunk_b' ],
 	[ 0,  7000, 'trunk_m' ],
-	[ 0,  2000, 'turtle', { y: 193}],
-	[ 5,  1000, 'turtle', { y: 97 , V: 125}],
+	[ 0,  500, 'turtle', { y: 193}],
+	[ 0,  500, 'turtle', { y: 97 , V: 125}],
 ]
 
 function startGame() { 
@@ -84,10 +60,10 @@ function startGame() {
 var playGame = function() {
 	Game.setBoard(2,new GameBoard());
 	var board_1 = new GameBoard();
-	
-	board_1.add(new Frog());
-	//board_1.add(new Level(level1,winGame));
 	board_1.add(new Spawners(level_1));
+	board_1.add(new Water());
+	board_1.add(new Home());
+	board_1.add(new Frog());
 	Game.setBoard(1,board_1);
 };
 

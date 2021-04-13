@@ -53,11 +53,17 @@ var Frog = function(){
 	this.y = Game.height - this.h;
 	this.reload = this.reloadTime;
 	this.delaytime = -1;
+
 	this.dx = 0;
 	this.dy = 0;
 	this.row = 1;
 	this.col = 0;
+
 	this.vt = 0;
+
+	this.move = 'none';
+
+	this.safe = false;
 }
 
 Frog.prototype = new Sprite();
@@ -67,11 +73,11 @@ Frog.prototype.step = function(dt) {
 
 	//Movimiento por el jugador de la rana
 	if(this.delaytime < 0){
-		if(Game.keys['left']) 		{ this.vx = -this.maxVel; this.delaytime = 0.3; this.dx = this.x - this.w; }
-		else if(Game.keys['right']) { this.vx =  this.maxVel; this.delaytime = 0.3; this.dx = this.x + this.w; }
-		else if(Game.keys['up'])	{ this.vy = -this.maxVel; this.delaytime = 0.3; this.row++; this.dy = Game.height - this.h * this.row;}
-		else if(Game.keys['down'])	{ this.vy =  this.maxVel; this.delaytime = 0.3; this.row--;  this.dy = Game.height - this.h * this.row;}
-		else { this.vx = 0; this.vy = 0;}
+		if(Game.keys['left']) 		{ this.vx = -this.maxVel; this.delaytime = 0.3; this.dx = this.x - this.w; this.move='none';}
+		else if(Game.keys['right']) { this.vx =  this.maxVel; this.delaytime = 0.3; this.dx = this.x + this.w; this.move='none';}
+		else if(Game.keys['up'])	{ this.vy = -this.maxVel; this.delaytime = 0.3; this.row++; this.dy = Game.height - this.h * this.row; this.move='up';}
+		else if(Game.keys['down'])	{ this.vy =  this.maxVel; this.delaytime = 0.3; this.row--;  this.dy = Game.height - this.h * this.row; this.move='none';}
+		else { this.vx = 0; this.vy = 0; this.move='none';}
 	}
 	else{
 		this.delaytime -= dt;
@@ -100,25 +106,30 @@ Frog.prototype.step = function(dt) {
 	else if(this.y > Game.height - this.h) {
 		this.y = Game.height - this.h
 	}
+	this.safe = false;
 	
 }
 
 Frog.prototype.hit = function() {
-	if(this.board.remove(this)) {
-		this.board.add(new Dead(this.x + this.w/2,
-									 this.y + this.h/2));
+	if(!this.safe){
+		if(this.board.remove(this)) {
+			if(this.move == 'up'){
+				this.board.add(new Dead(this.x + this.w/2, this.y - this.h + this.h/2));
+			}
+			else{
+				this.board.add(new Dead(this.x + this.w/2, this.y + this.h/2));
+			}
 		loseGame();
+		}
 	}
 		
 }
 
 Frog.prototype.onTrunk = function(vt, dt) {  
 	this.x += vt * dt;
-	if(this.x < 0 || this.x > Game.width - this.w) { 
-		this.hit(); 
-	}
-	
+	this.safe = true;
 }
+
 
 ///////////////////////////////////////
 //Coche
@@ -140,6 +151,7 @@ Car.prototype.step = function(dt) {
 
 	var collision = this.board.collide(this,OBJECT_PLAYER);
 	if(collision) {
+
 		collision.hit();
 	}
 
@@ -222,10 +234,10 @@ Turtle.prototype.draw = function(ctx) {
 ///////////////////////////////////////
 //Agua
 ///////////////////////////////////////
-var Water = function(blueprint,override) {
-	this.merge(this.baseParameters);
-	this.setup(blueprint.sprite,blueprint);
-	this.merge(override);
+var Water = function() {
+	this.setup('water',{frame: 0});
+	this.x = 0;
+	this.y = 49;
 }
 
 Water.prototype = new Sprite();
@@ -241,6 +253,30 @@ Water.prototype.step = function(dt) {
 }
 
 Water.prototype.draw = function(ctx) {}
+
+///////////////////////////////////////
+//Home
+///////////////////////////////////////
+var Home = function() {
+	this.setup('home',{frame: 0});
+	this.x = 0;
+	this.y = 0;
+}
+
+Home.prototype = new Sprite();
+Home.prototype.type =  OBJECT_HOME;
+
+Home.prototype.step = function(dt) {
+	
+	var collision = this.board.collide(this,OBJECT_PLAYER);
+	
+	if(collision) {
+		this.board.remove(this);
+		winGame();
+	}
+	
+}
+Home.prototype.draw = function(ctx) {}
 
 ///////////////////////////////////////
 //Dead animation
