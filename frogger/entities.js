@@ -270,7 +270,7 @@ Home.prototype.step = function(dt) {
 	
 	var collision = this.board.collide(this,OBJECT_PLAYER);
 	
-	if(collision) {
+	if(collision && collision.onTrunk()) {
 		this.board.remove(this);
 		winGame();
 	}
