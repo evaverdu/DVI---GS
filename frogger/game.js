@@ -35,17 +35,18 @@ var turtles = {
 }
 
 var level_1 = [
+	[ 0, 2000, 'turtle', { y: 193}],
+	[ 0, 2500, 'turtle', { y: 97 , V: 125}],
+	[ 0, 3000, 'trunk_s' ],
+	[ 0, 3000, 'trunk_m', { y: 145 }],
+	[ 0, 3000, 'trunk_m', { y: 241 , V:100} ],
 	[ 0, 3000, 'car1' ],
 	[ 0, 4000, 'car2' ],
 	[ 0, 3000, 'car3' ],
 	[ 0, 5000, 'smalltruck' ],
 	[ 0, 7000, 'bigtruck' ],
 	
-	[ 0,  4000, 'trunk_s' ],
-	[ 0, 5000, 'trunk_b' ],
-	[ 0,  7000, 'trunk_m' ],
-	[ 0,  500, 'turtle', { y: 193}],
-	[ 0,  500, 'turtle', { y: 97 , V: 125}],
+	
 ]
 
 function startGame() { 

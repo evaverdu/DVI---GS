@@ -90,7 +90,7 @@ var SpriteSheet = new function() {
 }
 
 ///////////////////////////////////////
-//Objeto que define la  pantalla de titulo
+//Objeto que define las pantallas de titulo.
 ///////////////////////////////////////
 
 
@@ -210,8 +210,9 @@ var GameBoard = function() {
 };
 
 ///////////////////////////////////////
-//Generador de coches, troncos y tortugas
+//Generador de coches, troncos y tortugas.
 ///////////////////////////////////////
+
 
 var Spawners = function(levelData){
 	this.levelData = [];
@@ -227,29 +228,22 @@ Spawners.prototype.step = function(dt) {
 	var idx = 0, remove = [], curShip = null;
 	// Update the current time offset
 	this.t += dt * 1000;
-	// Example levelData
-	// Start, Gap, Type, Override
-	// [[ 0, 500, 'step', { x: 100 } ]
 
 	while((curShip = this.levelData[idx]) && (curShip[0] < this.t + 2000)) {
 		if(curShip[0] < this.t) {
-		// Get the enemy definition blueprint
 			if(curShip[2] == 'trunk_s' || curShip[2] == 'trunk_m' || curShip[2] == 'trunk_b'){
 				var trunk = trunks[curShip[2]],
 				override = curShip[3];
-				// Add a new enemy with the blueprint and override
 				this.board.addhead(new Trunk(trunk,override));
 			}
 			else if(curShip[2] == 'turtle'){
 				var turtle = turtles[curShip[2]],
 				override = curShip[3];
-				// Add a new enemy with the blueprint and override
 				this.board.addhead(new Turtle(turtle,override));
 			}
 			else{
 				var car = cars[curShip[2]],
 				override = curShip[3];
-				// Add a new enemy with the blueprint and override
 				this.board.addhead(new Car(car,override));
 			}
 			curShip[0] += curShip[1];
@@ -257,24 +251,16 @@ Spawners.prototype.step = function(dt) {
 		idx++;
 	}
 
-	// Remove any objects from the levelData that have passed
 	for(var i = 0, len = remove.length; i < len; i++) {
 		var idx = this.levelData.indexOf(remove[i]);
 		if(idx != -1) this.levelData.splice(idx,1);
 	}
 
-	// If there are no more enemies on the board or in
-	// levelData, this level is done
 	if(this.levelData.length == 0 && this.board.cnt[OBJECT_ENEMY] == 0) {
 		if(this.callback) this.callback();
 	}
 }
 
-/*
-var Spawners = function(Object,row,f){
-	this.board.addhead(new Car(car,override));
-}
-*/
 ///////////////////////////////////////
 //Analiticas
 ///////////////////////////////////////
@@ -285,7 +271,6 @@ var analytics = new function(){
 	var fps = 0;
 	this.step = function(dt){
 		var now = Date.now();
-		//Ignoramos el dt que nos indica el método loop()
 		var dt = (now-lastDate);
 		lastDate = now;
 

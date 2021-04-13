@@ -1,3 +1,6 @@
+///////////////////////////////////////
+//Clase que maneja los Sprites.
+///////////////////////////////////////
 var Sprite = function() { }
 
 Sprite.prototype.setup = function(sprite,props) {
@@ -32,10 +35,11 @@ var OBJECT_PLAYER = 1,
 	OBJECT_POWERUP = 16; 
 
 ///////////////////////////////////////
-//Fondo
+//Fondo del juego.
 ///////////////////////////////////////
 
 var Background = function(){
+	//Creamos el fondo y lo colocamos.
 	this.setup('background',{frame: 0});
 	this.x = 0;
 	this.y = 0;
@@ -45,8 +49,9 @@ Background.prototype = new Sprite();
 Background.prototype.step = function(dt) {}
 
 ///////////////////////////////////////
-//Frog
+//Rana del juego.
 ///////////////////////////////////////
+
 var Frog = function(){
 	this.setup('frog',{ vx: 0, vy: 0, frame: 0, reloadTime: 0.25, maxVel: 200 });
 	this.x = Game.width/2 - this.w / 2;
@@ -61,9 +66,9 @@ var Frog = function(){
 
 	this.vt = 0;
 
-	this.move = 'none';
+	this.move = 'none'; //Para colocar bien la animacion de la muerte de la rana
 
-	this.safe = false;
+	this.safe = false; // Para controlar cuando la rana está en un tronco.
 }
 
 Frog.prototype = new Sprite();
@@ -132,8 +137,9 @@ Frog.prototype.onTrunk = function(vt, dt) {
 
 
 ///////////////////////////////////////
-//Coche
+//Clase que maneja los coches.
 ///////////////////////////////////////
+
 var Car = function(blueprint,override) {
 	this.merge(this.baseParameters);
 	this.setup(blueprint.sprite,blueprint);
@@ -151,7 +157,6 @@ Car.prototype.step = function(dt) {
 
 	var collision = this.board.collide(this,OBJECT_PLAYER);
 	if(collision) {
-
 		collision.hit();
 	}
 
@@ -166,8 +171,9 @@ Car.prototype.draw = function(ctx) {
 }
 
 ///////////////////////////////////////
-//Troncos
+//Clase que maneja los troncos.
 ///////////////////////////////////////
+
 var Trunk = function(blueprint,override) {
 	this.merge(this.baseParameters);
 	this.setup(blueprint.sprite,blueprint);
@@ -199,7 +205,7 @@ Trunk.prototype.draw = function(ctx) {
 }
 
 ///////////////////////////////////////
-//Tortugas
+//Clase que maneja las tortugas.
 ///////////////////////////////////////
 var Turtle = function(blueprint,override) {
 	this.merge(this.baseParameters);
@@ -232,7 +238,7 @@ Turtle.prototype.draw = function(ctx) {
 }
 
 ///////////////////////////////////////
-//Agua
+//Clase que maneja la porción de agua.
 ///////////////////////////////////////
 var Water = function() {
 	this.setup('water',{frame: 0});
@@ -246,8 +252,7 @@ Water.prototype.type =  OBJECT_ENEMY;
 Water.prototype.step = function(dt) {
 	
 	var collision = this.board.collide(this,OBJECT_PLAYER);
-	//En caso de que detecte agua y que no está sobre un tronco
-	if(collision && !collision.onTrunk()) {
+	if(collision) {
 		collision.hit();
 	}
 	
@@ -256,7 +261,7 @@ Water.prototype.step = function(dt) {
 Water.prototype.draw = function(ctx) {}
 
 ///////////////////////////////////////
-//Home
+//Clase que maneja la zona de llegada de la rana.
 ///////////////////////////////////////
 var Home = function() {
 	this.setup('home',{frame: 0});
@@ -271,7 +276,7 @@ Home.prototype.step = function(dt) {
 	
 	var collision = this.board.collide(this,OBJECT_PLAYER);
 	
-	if(collision && collision.onTrunk()) {
+	if(collision) {
 		this.board.remove(this);
 		winGame();
 	}
@@ -280,7 +285,7 @@ Home.prototype.step = function(dt) {
 Home.prototype.draw = function(ctx) {}
 
 ///////////////////////////////////////
-//Dead animation
+//Animación de la muerte de la rana.
 ///////////////////////////////////////
 
 var Dead = function(centerX,centerY) {
