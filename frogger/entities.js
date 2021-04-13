@@ -246,7 +246,8 @@ Water.prototype.type =  OBJECT_ENEMY;
 Water.prototype.step = function(dt) {
 	
 	var collision = this.board.collide(this,OBJECT_PLAYER);
-	if(collision) {
+	//En caso de que detecte agua y que no está sobre un tronco
+	if(collision && !collision.onTrunk()) {
 		collision.hit();
 	}
 	
